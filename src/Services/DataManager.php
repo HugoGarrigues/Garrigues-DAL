@@ -12,16 +12,16 @@ class DataManager {
         $this->pdo = $pdo;
     }
     
-    public function selectRecord($table, $params) {
+    public function selectRecord($table, $filter) {
 
             // Construction de la requête //
-            $query = "SELECT * FROM $table" . (!empty($params['id']) ? " WHERE id = :id" : '');
+            $query = "SELECT * FROM $table" . (!empty($filter['id']) ? " WHERE id = :id" : '');
 
             // Préparation de la requête //
             $sql = $this->pdo->prepare($query);
 
             // Ajout de l'ID si renseigné par l'utilisateur //
-            foreach ($params as $key => $value) {
+            foreach ($filter as $key => $value) {
                 $sql->bindValue(":$key", $value);
             }
 
@@ -38,7 +38,7 @@ class DataManager {
 
     }
 
-    public function deleteRecord($table, $params) {
+    public function deleteRecord($table, $filter) {
 
         // Construction de la requête //
         $query = "DELETE FROM $table WHERE id = :id";
@@ -47,7 +47,7 @@ class DataManager {
         $sql = $this->pdo->prepare($query);
 
         // Ajout de l'ID si renseigné par l'utilisateur //
-        $sql->bindValue(':id', $params['id']);
+        $sql->bindValue(':id', $filter['id']);
 
         // Exécution de la requête //
         $sql->execute();
@@ -60,9 +60,9 @@ class DataManager {
         }
     }
 
-    public function createRecord($table, $params) {
-        $columns = implode(', ', array_keys($params));
-        $values = ':' . implode(', :', array_keys($params));
+    public function createRecord($table, $filter) {
+        $columns = implode(', ', array_keys($filter));
+        $values = ':' . implode(', :', array_keys($filter));
 
         // Construire la requête INSERT complète
         $query = "INSERT INTO $table ($columns) VALUES ($values)";
@@ -71,7 +71,7 @@ class DataManager {
         $sql = $this->pdo->prepare($query);
 
         // Ajout des valeurs pour l'insertion //
-        foreach ($params as $key => $value) {
+        foreach ($filter as $key => $value) {
             $sql->bindValue(":$key", $value);
         }
         // Exécuter la requête
@@ -85,10 +85,10 @@ class DataManager {
         }
     }
 
-    public function updateRecord($table, $id, $params) {
+    public function updateRecord($table, $id, $filter) {
         // Construction de SET //
         $setClause = '';
-        foreach ($params as $key => $value) {
+        foreach ($filter as $key => $value) {
             $setClause .= ($setClause === '') ? "$key = :$key" : ", $key = :$key";
         }
 
@@ -102,7 +102,7 @@ class DataManager {
         $sql->bindValue(':id', $id);
 
         // Ajout des valeurs pour l'insertion //
-        foreach ($params as $key => $value) {
+        foreach ($filter as $key => $value) {
             $sql->bindValue(":$key", $value);
         }
 

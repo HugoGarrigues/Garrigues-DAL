@@ -12,18 +12,18 @@ $pdo = \Config\BddAccess::createPDO('pwd.json');
 if ($pdo) {
     $dataManager = new \Services\DataManager($pdo);
 
-    // Récupération des paramètres de l'URL
-    $params = \Utils\UrlParser::getParams();
+    // Récupération des filtres de l'URL
+    $filter = \Utils\UrlParser::getFilters();
 
     // Table à utiliser
     $table = 'livres';
 
     // SwitchCase permettant a l'utilisateur de choisir l'action qu'il souhaite réaliser //
-    switch ($params['action'])  {
+    switch ($filter['action'])  {
 
         case 'select':
             // Utilisation de la fonction selectRecord qui affiche un enregistrement en fonction de l'ID demandé par l'utilisateur //
-            $selectedRecords = $dataManager->selectRecord($table, ['id' => $params['id']]);
+            $selectedRecords = $dataManager->selectRecord($table, ['id' => $filter['id']]);
             echo json_encode($selectedRecords, JSON_PRETTY_PRINT);
             break;
 
@@ -35,26 +35,26 @@ if ($pdo) {
 
         case 'delete':
             // Utilisation de la fonction deleteRecord qui supprime un enregistrement //
-            $dataManager->deleteRecord($table, ['id' => $params['id']]);
+            $dataManager->deleteRecord($table, ['id' => $filter['id']]);
             break;
 
         case 'create':
             // Utilisation de la fonction createRecord qui crée un enregistrement en fonction des données renseignés par l'utilisateur //
             $dataManager->createRecord($table, [
-                'titre' => $params['titre'],
-                'auteur' => $params['auteur'],
-                'annee_publication' => $params['annee'],
-                'prix' => $params['prix']
+                'titre' => $filter['titre'],
+                'auteur' => $filter['auteur'],
+                'annee_publication' => $filter['annee'],
+                'prix' => $filter['prix']
             ]);
             break;
 
         case 'update':
             // Utilisation de la fonction updateRecord qui modifie un enregistrement en fonction des données renseignés par l'utilisateur //
-            $dataManager->updateRecord($table, $params['updateId'], [
-                'titre' => $params['updateTitre'],
-                'auteur' => $params['updateAuteur'],
-                'annee_publication' => $params['updateAnnee'],
-                'prix' => $params['updatePrix']
+            $dataManager->updateRecord($table, $filter['updateId'], [
+                'titre' => $filter['updateTitre'],
+                'auteur' => $filter['updateAuteur'],
+                'annee_publication' => $filter['updateAnnee'],
+                'prix' => $filter['updatePrix']
             ]);
             break;
 
