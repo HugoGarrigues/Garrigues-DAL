@@ -19,6 +19,7 @@ Rejoignez-nous et découvrez une nouvelle manière de trouver et d'acheter des s
 
 ## Sommaire
 
+- [Description](#description)
 - [Fonctionnalités](#fonctionnalités)
 - [Installation](#installation)
 - [Utilisation](#utilisation)
